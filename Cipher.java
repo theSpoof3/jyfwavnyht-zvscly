@@ -4,24 +4,35 @@ public class Cipher {
 	/* cipher object
 	 *  do chars for indvidual get set you know
 	 */
-	private static String cipher;
+	private static char[] cipher = new char[26];
 
 	public Cipher(){
 		for (int i = 1; i<=26; i++){
-			cipher+='#';
+			cipher[i]='#';
 		}
 	}
 	// takes array of 26 chars makes string
 	public Cipher(char[] array){
+		cipher = array;
+	}
+	
+	public Cipher(String str){
 		for (int i = 0; i<=25; i++){
-			cipher+=array[i];			
+			cipher[i] = str.charAt(i);
 		}
 	}
 
-	public static boolean worksWith(String string_1, String string_2){
+	public char get(int index){
+		return cipher[index];
+	}
+
+	public void set(int index, char Char){
+		cipher[index]=Char;
+	}
+	public static boolean worksWith(Cipher cipher_1, Cipher cipher_2){
 		for (int i = 0; i<= 26; i++) {
 			for (int j = 0; j<= 26; j++) {
-				if (string_1.charAt(i)!='#'&&string_1.charAt(i)!=string_2.charAt(j)) { //if the characters....you know what it does
+				if (cipher_1.get(i)!='#'&&cipher_1.get(i)!=cipher_2.get(j)) { //if the characters....you know what it does
 					return false;
 				}
 			}
@@ -29,40 +40,31 @@ public class Cipher {
 		return true;
 	}
 
-	public static String decodeCipher(String message, String cipher) {
-		String abc="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	public static String decodeCipher(String code, Cipher cipher) {
+		String  message = code;
+		Cipher abc = new Cipher("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 		String solved="";
 		//fixing case for greater than alphabet length
 		for(int i=0; i<message.length()-1; i++) {
-			char letter=message.charAt(i); //picks next letter
-			int y=message.indexOf(letter); //position of coded letter
-			if (letter==" ".charAt(0)) {
-				solved=solved+" ";
-				continue;
-			} else if(y!=-1){
-				char codeletter=abc.charAt(y); //converts letter to code letter
-				solved=solved + codeletter;
-			} else if(y==-1){
-				solved+=letter;
-			}
+			message.replace(cipher.get(i), abc.get(i));
 		}
 		return solved;
 	}
 
-	public static String combine(String cipher1, String cipher2) throws IllegalArgumentException{
+	public static String combine(Cipher cipher1, Cipher cipher2) throws IllegalArgumentException{
 		String finalCipher="";
 		if (worksWith(cipher1, cipher2)==false){
 			throw new IllegalArgumentException();
 		}
 
 		for (int i = 0; i<=25; i++){
-			if (cipher1.charAt(i)!='#'){
-				finalCipher+=cipher1.charAt(i);
+			if (cipher1.get(i)!='#'){
+				finalCipher+=cipher1.get(i);
 			}
-			else if(cipher2.charAt(i)!='#') {
-				finalCipher+=cipher2.charAt(i);
+			else if(cipher2.get(i)!='#') {
+				finalCipher+=cipher2.get(i);
 			}
-}
+		}
 
 
 		return finalCipher;
