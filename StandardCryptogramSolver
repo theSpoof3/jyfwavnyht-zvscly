@@ -1,0 +1,145 @@
+package cyrptogramChallenge;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class StandardCryptogramSolver {
+
+
+	public static ArrayList<ArrayList<Integer>> findDoubles(String word) {
+		ArrayList<ArrayList<Integer>> a = new ArrayList<ArrayList<Integer>>(); //stores combination representing identical letters
+		for (int i = 0; i < word.length()-1; i++) { //iterate through word
+			char c = word.charAt(i); //just for making it faster
+			for (int j = i; j < word.length(); j++) {
+				if (word.charAt(j) == c) {
+					ArrayList<Integer> q = new ArrayList<Integer>();//make elements for main arraylist
+					q.add(i);
+					q.add(j);
+					a.add(q);
+				}
+			}
+		}
+		return a;
+	}
+
+	public static char fillPossibilities(String word, String[] wordList, int i, int j, char letter, ArrayList<ArrayList<Integer>> doubles){
+			return wordList[i].charAt(doubles.get(j).get(0));
+		
+	}
+
+	public static ArrayList<Cipher> findCiphers(String word, String[] wordList) {
+		ArrayList<ArrayList<Integer>> doubles = findDoubles(word);
+		int wordLength = word.length(); //making it slightly faster
+		ArrayList<Cipher> ciphers = new ArrayList<Cipher>(); //stores strings that match the criteria
+		for (int i = 0; i < wordList.length; i++) {//iterate through word list (long, but I have no better schemes)
+			Cipher possibility = new Cipher();
+			char[] letters = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+			if (wordList[i].length() == wordLength) {
+				for (int j = 0; j < doubles.size(); j++) {
+					if (wordList[i].charAt(doubles.get(j).get(0)) == wordList[i].charAt(doubles.get(j).get(1))) {//test if the doubles are in the right place
+						for (int k = 0; k<=25; k++){
+							possibility.set(k, fillPossibilities(word, wordList, i, j, letters[k], doubles)); //fill possibilities 
+						}
+					}
+				}
+				ciphers.add(possibility);
+			}
+		}
+		return ciphers; 
+	}
+
+
+	/* takes arraylist of arraylist of Strings
+	 * combines and eliminates each row
+	 * left with an arraylist of one arraylist of one string (more than one is techically possible but highly unlikely
+	 */
+
+	public static ArrayList<ArrayList<String>> eliminateOptions(ArrayList<ArrayList<String>> cipherList){
+		//makes new arrayList and sets size to one less than cipher list
+		ArrayList<ArrayList<String>> newList = cipherList;
+		ArrayList<String> tempList = new ArrayList<String>();
+		newList.remove(0); //gets rid of the first list bc/s it will get combined with the next
+
+		for (String i: cipherList.get(0)){ //iterate first word possibilities
+			for (String j: cipherList.get(1)){//iterate through next set of possibilities
+				if (cipher.worksWith(i, j)==false){ //if the two ciphers work together
+					tempList.add(combine(i, j));
+				}
+			}
+		}
+		
+		newList.set(0, tempList);
+		newList=eliminateOptions(newList);
+		return newList;
+	}
+
+
+
+
+	public static void main(String[] args) throws FileNotFoundException {
+		String word = "NECESSARY";
+		String[] wordList = Message.readFile();
+		ArrayList<Cipher> stuff = findCiphers(word, wordList);
+		for (Cipher c: stuff) {
+			for (int i = 0; i<=25; i++){
+				System.out.print(c.get(i));
+			}
+			System.out.println("");
+		}
+/*
+		String[] wordList = readFile();
+		System.out.println(wordList);
+		/*
+		Scanner console = new Scanner (System.in);
+		System.out.println("input cipher, you idiot: ");
+		//ArrayList<ArrayList<Integer>> a = findDoubles(word);
+		String cipher = console.nextLine();
+		System.out.println("auto initializing cipher: ");
+		String cipher = "DJMLWK YNIS DJSM NW ZTO PNSRF LG TJSF. LH LZ POSO OJGY, OVOSYENFY PNIRF FN LZ. EIZ LZâ€™G WNZ. LZ ZJMOG BJZLOWCO, LZ ZJMOG CNDDLZDOWZ, JWF LZ CNDOG PLZT BROWZY NH HJLRISO JRNWK ZTO PJY. ZTO SOJR ZOGZ LG WNZ PTOZTOS YNI JVNLF ZTLG HJLRISO, EOCJIGO YNI PNWâ€™Z. LZâ€™G PTOZTOS YNI ROZ LZ TJSFOW NS GTJDO YNI LWZN LWJCZLNW, NS PTOZTOS YNI ROJSW HSND LZ; PTOZTOS YNI CTNNGO ZN BOSGOVOSO.";
+		String originalCipher = cipher;
+		System.out.println(cipher);
+		long startTime = System.currentTimeMillis();
+
+		String[] orgiginalCipherList = cipher.split(" ");
+
+		for (String s : orgiginalCipherList) {
+			s = removePunctuation(s);
+			//System.out.println(s);
+		}
+		orgiginalCipherList = sortByLength(orgiginalCipherList);
+		ArrayList<ArrayList<Cipher>> cipherList = new ArrayList<ArrayList<Cipher>>();
+		for (int i = 0; i < orgiginalCipherList.length-1; i++) { //iterate through String [] of each word
+			cipherList.add(findCiphers(orgiginalCipherList[i], wordList));
+			for (Cipher c : findCiphers(orgiginalCipherList[i], wordList)) {
+				System.out.println(c); //prints all possible 26 char ciphers
+			}
+		}
+
+		long endTime = System.currentTimeMillis();
+		System.out.println(endTime-startTime);
+		//console.close();
+	}
+	private static String[] sortByLength(String[] orgiginalCipherList) {       
+        String temp;
+        for (int i = 1; i < orgiginalCipherList.length; i++) {
+            for(int j = i ; j > 0 ; j--){
+                if(orgiginalCipherList[j].length() > orgiginalCipherList[j-1].length()){
+                    temp = orgiginalCipherList[j];
+                    orgiginalCipherList[j] = orgiginalCipherList[j-1];
+                    orgiginalCipherList[j-1] = temp;
+                }
+            }
+	    }
+	    return orgiginalCipherList;
+	}
+
+	public static void findCombined(ArrayList<ArrayList<Cipher>> cipherList) {
+		*/
+	}
+
+}
+
+
+
